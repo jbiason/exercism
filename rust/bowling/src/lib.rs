@@ -145,6 +145,10 @@ mod frame {
             self.throws.push(throw.clone());
         }
 
+        pub fn possible_spare(&self, pins: u16) -> bool {
+            self.throws.len() == 1 && self.score().unwrap() + pins == 10
+        }
+
         pub fn score(&self) -> Option<u16> {
             if self.throws.len() == 0 || self.throws.iter().any(|throw| throw.is_free_throw()) {
                 None
@@ -153,8 +157,8 @@ mod frame {
             }
         }
 
-        pub fn is_spare(&self) -> bool {
-            self.throws.len() == 2 && self.score() == Some(10)
+        pub fn is_closed(&self) -> bool {
+            self.throws.len() >= 2 && self.throws.iter().all(|throw| !throw.is_free_throw())
         }
     }
 
@@ -225,8 +229,8 @@ mod frame {
 use std::rc::Rc;
 
 pub struct BowlingGame {
-    frames: Vec<frame::Frame>,
-    throws: Vec<Rc<throw::Throw>>,
+    pub frames: Vec<frame::Frame>,
+    pub throws: Vec<Rc<throw::Throw>>,
 }
 
 impl BowlingGame {
@@ -240,76 +244,164 @@ impl BowlingGame {
     pub fn roll(&mut self, pins: u16) -> Result<(), Error> {
         if !self.has_free_throws() && self.is_finished() {
             Err(Error::GameComplete)
+        } else if pins > 10 {
+            Err(Error::NotEnoughPinsLeft)
         } else {
-            let throw = self.make_throw(pins);
-            let last_id = self.throws.len();
-            let frame = self.last_frame();
-            frame.add_throw(&throw);
-
-            // check if the player gained any free throws.
-            if pins == 10 {
-                // a strike, you get 2 free throws
-                let new_throw = Rc::new(throw::Throw::new_free(last_id + 1));
-                self.throws.push(new_throw.clone());
-                frame.add_throw(&new_throw);
-
-                let new_throw = Rc::new(throw::Throw::new_free(last_id + 2));
-                self.throws.push(new_throw.clone());
-                frame.add_throw(&new_throw);
-            } else if frame.is_spare() {
-                // in a spare, just one throw
-                let new_throw = Rc::new(throw::Throw::new_free(last_id + 1));
-                self.throws.push(new_throw.clone());
-                frame.add_throw(&new_throw);
+            let mut frame_throws: Vec<Rc<throw::Throw>> = Vec::new();
+            if !self.has_free_throws() {
+                let throw = self.add_new_throw(pins);
+                frame_throws.push(throw);
+            } else {
+                self.reuse_free_throw(pins);
             }
+
+            if pins == 10 {
+                // On a strike, the player get two "free" throws.
+                let last_id = self.throws.len();
+                frame_throws.push(Rc::new(throw::Throw::new_free(last_id + 1)));
+                frame_throws.push(Rc::new(throw::Throw::new_free(last_id + 2)));
+            } else if self.spare(pins) {
+                let last_id = self.throws.len();
+                frame_throws.push(Rc::new(throw::Throw::new_free(last_id + 1)));
+            }
+
+            self.push_throws_to_last_frame(frame_throws.as_slice());
+            self.push_free_throws(frame_throws.as_slice());
 
             dbg!(&self.throws);
             dbg!(&self.frames);
+
             Ok(())
         }
     }
 
-    pub fn score(&self) -> Option<u16> {
-        None
-        // if !self.is_finished() {
-        //     None
-        // } else {
-        //     Some(self.frames.iter().map(|x| x.score()).sum())
-        // }
+    /// Add a new throw to the throw list.
+    pub fn add_new_throw(&mut self, pins: u16) -> Rc<throw::Throw> {
+        let last_id = self.throws.len();
+        let new_throw = Rc::new(throw::Throw::new(last_id, pins));
+        self.throws.push(new_throw.clone());
+        new_throw.clone()
     }
 
-    /// If there are free throws, update the most recent one; if there are none, create a new
-    /// throw.
-    fn make_throw(&mut self, pins: u16) -> Rc<throw::Throw> {
-        let new_id = self.throws.len() + 1;
-        self.throws
-            .iter_mut()
-            .filter(|x| x.is_free_throw())
-            .take(1)
-            .next()
-            .map_or(Rc::new(throw::Throw::new_free(new_id)), |x| {
-                let throw = Rc::get_mut(x).unwrap();
-                throw.update(pins);
-                x.clone()
-            })
+    /// Reuse on the free throws in the throw list instead of creating a new one.
+    pub fn reuse_free_throw(&mut self, pins: u16) {
+        (*Rc::get_mut(
+            self.throws
+                .iter_mut()
+                .filter(|throw| throw.is_free_throw())
+                .take(1)
+                .next()
+                .expect("There are no free throws for reuse"),
+        )
+        .expect("Failed to get the mutable reference to the free throw"))
+        .update(pins);
     }
 
-    /// Check if the list of throws in the game there are at least one free.
-    fn has_free_throws(&self) -> bool {
-        self.throws.iter().any(|x| x.is_free_throw())
-    }
-
-    /// The game is over when there are 10 frames of scores.
-    fn is_finished(&self) -> bool {
-        self.frames.len() == 10
-    }
-
-    /// Get the last/current frame.
-    fn last_frame(&mut self) -> &mut frame::Frame {
-        if self.frames.len() == 0 {
-            let new_id = self.frames.len() + 1;
-            self.frames.push(frame::Frame::new(new_id));
+    /// A a throw to the last available frame.
+    pub fn push_throws_to_last_frame(&mut self, throws: &[Rc<throw::Throw>]) {
+        if self.frames.len() == 0 || self.frames.last().unwrap().is_closed() {
+            let last_id = self.frames.len();
+            let mut new_frame = frame::Frame::new(last_id + 1);
+            for throw in throws {
+                new_frame.add_throw(&throw.clone());
+            }
+            self.frames.push(new_frame);
+        } else {
+            let last_frame = self.frames.last_mut().unwrap();
+            for throw in throws {
+                last_frame.add_throw(&throw.clone());
+            }
         }
-        self.frames.iter_mut().last().unwrap()
+    }
+
+    pub fn push_free_throws(&mut self, throws: &[Rc<throw::Throw>]) {
+        for throw in throws.iter().filter(|throw| throw.is_free_throw()) {
+            self.throws.push(throw.clone());
+        }
+    }
+
+    /// Return the game score, but only if the game is fininshed.
+    pub fn score(&self) -> Option<u16> {
+        if !self.is_finished() {
+            None
+        } else {
+            Some(self.frames.iter().map(|x| x.score().unwrap_or(0)).sum())
+        }
+    }
+
+    /// Check if the game is fininshed.
+    pub fn is_finished(&self) -> bool {
+        self.frames.len() == 10
+            && self
+                .frames
+                .iter()
+                .last()
+                .map_or(false, |frame| frame.is_closed())
+    }
+
+    pub fn spare(&self, pins: u16) -> bool {
+        self.frames
+            .last()
+            .map_or(false, |frame| frame.possible_spare(pins))
+    }
+
+    /// Check if there are any free throws available.
+    pub fn has_free_throws(&self) -> bool {
+        self.throws.iter().any(|throw| throw.is_free_throw())
+    }
+}
+
+#[cfg(test)]
+mod game_internal_tests {
+    use std::rc::Rc;
+
+    #[test]
+    pub fn unfinished_game_not_enough_frames() {
+        let game = super::BowlingGame::new();
+        assert!(!game.is_finished());
+    }
+
+    #[test]
+    pub fn unfinished_game_free_throws_last_frame() {
+        let mut game = super::BowlingGame::new();
+
+        game.frames.push(super::frame::Frame::new(1));
+        game.frames.push(super::frame::Frame::new(2));
+        game.frames.push(super::frame::Frame::new(3));
+        game.frames.push(super::frame::Frame::new(4));
+        game.frames.push(super::frame::Frame::new(5));
+        game.frames.push(super::frame::Frame::new(6));
+        game.frames.push(super::frame::Frame::new(7));
+        game.frames.push(super::frame::Frame::new(8));
+        game.frames.push(super::frame::Frame::new(9));
+
+        let mut final_frame = super::frame::Frame::new(10);
+        final_frame.add_throw(&Rc::new(super::throw::Throw::new(1, 5)));
+        final_frame.add_throw(&Rc::new(super::throw::Throw::new_free(2)));
+        game.frames.push(final_frame);
+
+        assert!(!game.is_finished());
+    }
+
+    #[test]
+    pub fn finished_game() {
+        let mut game = super::BowlingGame::new();
+
+        game.frames.push(super::frame::Frame::new(1));
+        game.frames.push(super::frame::Frame::new(2));
+        game.frames.push(super::frame::Frame::new(3));
+        game.frames.push(super::frame::Frame::new(4));
+        game.frames.push(super::frame::Frame::new(5));
+        game.frames.push(super::frame::Frame::new(6));
+        game.frames.push(super::frame::Frame::new(7));
+        game.frames.push(super::frame::Frame::new(8));
+        game.frames.push(super::frame::Frame::new(9));
+
+        let mut final_frame = super::frame::Frame::new(10);
+        final_frame.add_throw(&Rc::new(super::throw::Throw::new(1, 5)));
+        final_frame.add_throw(&Rc::new(super::throw::Throw::new(2, 3)));
+        game.frames.push(final_frame);
+
+        assert!(game.is_finished());
     }
 }
