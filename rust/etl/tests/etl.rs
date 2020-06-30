@@ -12,7 +12,6 @@ fn test_transform_one_value() {
 }
 
 #[test]
-#[ignore]
 fn test_transform_more_values() {
     let input = input_from(&[(1, vec!['A', 'E', 'I', 'O', 'U'])]);
 
@@ -22,7 +21,6 @@ fn test_transform_more_values() {
 }
 
 #[test]
-#[ignore]
 fn test_more_keys() {
     let input = input_from(&[(1, vec!['A', 'E']), (2, vec!['D', 'G'])]);
 
@@ -32,7 +30,6 @@ fn test_more_keys() {
 }
 
 #[test]
-#[ignore]
 fn test_full_dataset() {
     let input = input_from(&[
         (1, vec!['A', 'E', 'I', 'O', 'U', 'L', 'N', 'R', 'S', 'T']),
