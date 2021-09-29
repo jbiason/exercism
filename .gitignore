@@ -11,5 +11,5 @@ _build
 .formatter.exs
 
 # C#
-obj/**
-bin/**
+**/obj/**
+**/bin/**
