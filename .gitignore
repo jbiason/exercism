@@ -9,3 +9,7 @@ target
 # Elixir
 _build
 .formatter.exs
+
+# C#
+obj/**
+bin/**
