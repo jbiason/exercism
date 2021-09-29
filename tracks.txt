@@ -1,0 +1,16 @@
+Bash			I
+C			I
+C#
+Clojure
+Elixir
+Erlang
+Haskell and
+Kotlin
+Lua
+Objective-C
+PHP
+Python
+Racket
+Rust
+Swift
+Typescript
