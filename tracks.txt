@@ -1,10 +1,10 @@
 Bash			I
 C			I
-C#
-Clojure
-Elixir
+C#			I
+Clojure			I
+Elixir			I
 Erlang
-Haskell and
+Haskell
 Kotlin
 Lua
 Objective-C
