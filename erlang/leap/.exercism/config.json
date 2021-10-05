@@ -1,0 +1,28 @@
+{
+  "blurb": "Given a year, report if it is a leap year.",
+  "authors": [
+    "tmcgilchrist"
+  ],
+  "contributors": [
+    "ErikSchierboom",
+    "iHiD",
+    "JordanAdams",
+    "juhlig",
+    "kytrinyx",
+    "NobbZ",
+    "xymbol"
+  ],
+  "files": {
+    "solution": [
+      "src/leap.erl"
+    ],
+    "test": [
+      "test/leap_tests.erl"
+    ],
+    "example": [
+      ".meta/example.erl"
+    ]
+  },
+  "source": "JavaRanch Cattle Drive, exercise 3",
+  "source_url": "http://www.javaranch.com/leap.jsp"
+}
