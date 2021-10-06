@@ -13,3 +13,6 @@ _build
 # C#
 **/obj/**
 **/bin/**
+
+# Haskell
+**/.stack-work/**
