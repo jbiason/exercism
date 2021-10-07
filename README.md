@@ -16,7 +16,7 @@ THE SOURCE IS PROVIDE AS-IS WITHOUT WARRANTY OF ANY KIND. USE AT YOUR RISK. KEEP
 | Kotlin      | I    |
 | Lua         | I    |
 | Objective-C | Out, exercism requires Xcode |
-| PHP         |      |
+| PHP         | I    |
 | Python      |      |
 | Racket      |      |
 | Rust        |      |
