@@ -16,3 +16,6 @@ _build
 
 # Haskell
 **/.stack-work/**
+
+# Python
+**/__pycache__/**
