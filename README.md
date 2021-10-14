@@ -12,13 +12,14 @@ THE SOURCE IS PROVIDE AS-IS WITHOUT WARRANTY OF ANY KIND. USE AT YOUR RISK. KEEP
 | Clojure     | I    |
 | Elixir      | I    |
 | Erlang      | I    |
+| F#          |      |
 | Haskell     | I    |
 | Kotlin      | I    |
 | Lua         | I    |
 | Objective-C | Out, exercism requires Xcode |
 | PHP         | I    |
 | Python      | I    |
-| Racket      |      |
+| Racket      | I    |
 | Rust        |      |
 | Swift       |      |
 | Typescript  |      |
