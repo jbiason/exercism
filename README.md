@@ -6,20 +6,20 @@ THE SOURCE IS PROVIDE AS-IS WITHOUT WARRANTY OF ANY KIND. USE AT YOUR RISK. KEEP
 
 | Language    | Days |
 | ----------- | ---- |
-| Bash        | I    |
-| C           | I    |
-| C#          | I    |
-| Clojure     | I    |
-| Elixir      | I    |
-| Erlang      | I    |
+| Bash        | 𝍩    |
+| C           | 𝍩    |
+| C#          | 𝍩    |
+| Clojure     | 𝍩    |
+| Elixir      | 𝍩    |
+| Erlang      | 𝍩    |
 | F#          |      |
-| Haskell     | I    |
-| Kotlin      | I    |
-| Lua         | I    |
+| Haskell     | 𝍩    |
+| Kotlin      | 𝍩    |
+| Lua         | 𝍩    |
 | Objective-C | Out, exercism requires Xcode |
-| PHP         | I    |
-| Python      | I    |
-| Racket      | I    |
+| PHP         | 𝍩    |
+| Python      | 𝍩    |
+| Racket      | 𝍩    |
 | Rust        |      |
 | Swift       |      |
 | Typescript  |      |
