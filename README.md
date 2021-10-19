@@ -22,4 +22,4 @@ THE SOURCE IS PROVIDE AS-IS WITHOUT WARRANTY OF ANY KIND. USE AT YOUR RISK. KEEP
 | Racket      | 𝍩    |
 | Rust        | 𝍩    |
 | Swift       | Out, Exercism requires Xcode |
-| Typescript  |      |
+| Typescript  | 𝍩    |
