@@ -20,6 +20,6 @@ THE SOURCE IS PROVIDE AS-IS WITHOUT WARRANTY OF ANY KIND. USE AT YOUR RISK. KEEP
 | PHP         | 𝍩    |
 | Python      | 𝍩    |
 | Racket      | 𝍩    |
-| Rust        |      |
-| Swift       |      |
+| Rust        | 𝍩    |
+| Swift       | Out, Exercism requires Xcode |
 | Typescript  |      |

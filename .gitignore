@@ -19,3 +19,6 @@ _build
 
 # Python
 **/__pycache__/**
+
+# TypeScript/JavaScript
+**/node_modules/**
