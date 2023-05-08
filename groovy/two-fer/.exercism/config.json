@@ -1,0 +1,23 @@
+{
+  "authors": [
+    "ikhadykin"
+  ],
+  "contributors": [
+    "amscotti",
+    "mattmoss",
+    "sjwarner-bp"
+  ],
+  "files": {
+    "solution": [
+      "src/main/groovy/TwoFer.groovy"
+    ],
+    "test": [
+      "src/test/groovy/TwoFerSpec.groovy"
+    ],
+    "example": [
+      ".meta/src/reference/groovy/TwoFer.groovy"
+    ]
+  },
+  "blurb": "Create a sentence of the form \"One for X, one for me.\".",
+  "source_url": "https://github.com/exercism/problem-specifications/issues/757"
+}

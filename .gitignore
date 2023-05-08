@@ -22,3 +22,9 @@ _build
 
 # TypeScript/JavaScript
 **/node_modules/**
+
+# Groovy
+**/build/**
+**/gradle*
+**/.gradle/**
+**/gradle/**
