@@ -1,0 +1,27 @@
+{
+  "authors": [],
+  "contributors": [
+    "alexanderific",
+    "amscotti",
+    "baincd",
+    "Dispader",
+    "ikhadykin",
+    "kytrinyx",
+    "Raibaz",
+    "sjwarner-bp"
+  ],
+  "files": {
+    "solution": [
+      "src/main/groovy/Gigasecond.groovy"
+    ],
+    "test": [
+      "src/test/groovy/GigasecondSpec.groovy"
+    ],
+    "example": [
+      ".meta/src/reference/groovy/Gigasecond.groovy"
+    ]
+  },
+  "blurb": "Given a moment, determine the moment that would be after a gigasecond has passed.",
+  "source": "Chapter 9 in Chris Pine's online Learn to Program tutorial.",
+  "source_url": "https://pine.fm/LearnToProgram/?Chapter=09"
+}
